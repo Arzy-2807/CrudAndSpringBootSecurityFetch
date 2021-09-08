@@ -9,5 +9,9 @@
         <module name="Crud" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="spring-security" target="1.8" />
+      <module name="SpringMVC_Security_Example" target="6" />
+    </bytecodeTargetLevel>
   </component>
 </project>

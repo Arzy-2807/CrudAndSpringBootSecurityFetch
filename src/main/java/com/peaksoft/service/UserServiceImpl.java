@@ -10,7 +10,7 @@ import java.util.List;
 
 @Service
 @Transactional
-public class UserServiceImpl  implements UserService{
+public class UserServiceImpl implements UserService{
 
     @Autowired
     private UserDao userDao;
@@ -26,18 +26,22 @@ public class UserServiceImpl  implements UserService{
     }
 
     @Override
-    public User getById(Integer id) {
-        return userDao.getById(id);
-    }
-
-    @Override
     public void updateUser(User user) {
-        userDao.updateUser(user);
-
+        this.userDao.updateUser(user);
     }
 
     @Override
     public void deleteUser(User user) {
         userDao.deleteUser(user);
+    }
+
+    @Override
+    public User get(long id) {
+        return userDao.get(id);
+    }
+
+    @Override
+    public User findByUsername(String username) {
+        return userDao.findByUserName(username);
     }
 }

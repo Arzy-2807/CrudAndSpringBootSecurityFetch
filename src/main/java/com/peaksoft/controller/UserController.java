@@ -1,58 +1,102 @@
 package com.peaksoft.controller;
 
+import com.peaksoft.model.Role;
 import com.peaksoft.model.User;
+import com.peaksoft.service.RoleService;
 import com.peaksoft.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
+import java.util.*;
 
 @Controller
-@RequestMapping("/users")
+@RequestMapping("/")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+	private final UserService userService;
+	private final RoleService roleService;
 
-    @GetMapping
-    private String getUsers(Model model) {
-        model.addAttribute("users", userService.getAllUsers());
-        return "users";
-    }
+	public UserController(UserService userService, RoleService roleService) {
+		this.userService = userService;
+		this.roleService = roleService;
+	}
 
-    @GetMapping("/add-user")
-    public String addUser(User user) {
-        return "add-user";
-    }
+	@GetMapping("/")
+	public String getHomePage(){
+		return "home-page";
+	}
 
-    @PostMapping("/save-user")
-    private String saveUsers(User user, Model model) {
-        userService.addUser(user);
-        model.addAttribute("users", userService.getAllUsers());
-        return "users";
-    }
+	@GetMapping("/login")
+	public String getLoginPage(){
+		return "login";
+	}
 
-    @GetMapping("/update-user/{id}")
-    public String updateUser(@PathVariable("id") Integer id, Model model) {
-        User user = userService.getById(id);
-        model.addAttribute("user", user);
-        return "update-user";
-    }
+	//localhost:8080/users
+	@GetMapping("/user")
+	public String getUser(Principal principal, Model model) {
+		User user = userService.findByUsername(principal.getName());
+		model.addAttribute("user", user);
+		return "user-page";
+	}
 
-    @PostMapping("/edit-user/{id}")
-    public String editUser(@PathVariable("id") Integer id, User user, Model model) {
-        userService.updateUser(user);
-        model.addAttribute("users",userService.getAllUsers());
-        return"users";
-    }
-    @GetMapping("/delete-user/{id}")
-    public String deleteUser(@PathVariable("id") Integer id, Model model){
-        userService.deleteUser(userService.getById(id));
-        model.addAttribute("users",userService.getAllUsers());
-        return "users";
-    }
+	@GetMapping("/admin")
+	public String listUser(Model model){
+		List<User> users = userService.getAllUsers();
+		model.addAttribute("users", users);
+		return "list-user";
+	}
 
+	@GetMapping("/add-user")
+	public String createUserForm(@ModelAttribute("user") User user, Model model){
+		model.addAttribute("user", user);
+		List<Role> roles = roleService.getAllRoles();
+		model.addAttribute("allRoles", roles);
+		return "add-user";
+	}
+
+	@PostMapping("/add-user")
+	public String createUser(User user, @RequestParam Map<String, String> form) {
+		List<String> roles = roleService.getRoleNamesToList();
+		Set<String> strings = new HashSet<>(roles);
+		user.getRoles().clear();
+		for (String key : form.keySet()) {
+			if (strings.contains(key)) {
+				user.getRoles().add(roleService.getRoleByName(key));
+			}
+		}
+		userService.addUser(user);
+		return "redirect:/admin";
+	}
+
+	@GetMapping("/update-user/{id}")
+	public String updateUserForm(@PathVariable("id") long id, Model model){
+		User user = userService.get(id);
+		model.addAttribute("user", user);
+		List<Role> roles = roleService.getAllRoles();
+		model.addAttribute("allRoles", roles);
+		return "update-user";
+	}
+
+	@PostMapping("/update-user")
+	public String updateUser(@ModelAttribute("user")User user, @RequestParam Map<String, String> form){
+		List<String> roles = roleService.getRoleNamesToList();
+		Set<String> strings = new HashSet<>(roles);
+		user.getRoles().clear();
+		for (String key: form.keySet()) {
+			if (strings.contains(key)) {
+				user.getRoles().add(roleService.getRoleByName(key));
+			}
+		}
+		userService.updateUser(user);
+		return "redirect:/admin";
+	}
+
+	@GetMapping("delete-user/{id}")
+	public String deleteUser(@PathVariable("id") long id){
+		userService.deleteUser(userService.get(id));
+		return "redirect:/admin";
+	}
 }

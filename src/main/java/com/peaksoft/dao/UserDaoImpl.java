@@ -1,6 +1,7 @@
 package com.peaksoft.dao;
 
 import com.peaksoft.model.User;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -26,18 +27,29 @@ public class UserDaoImpl implements UserDao{
         sessionFactory.openSession().save(user);
     }
 
-    @Override
-    public User getById(Integer id) {
-        return sessionFactory.getCurrentSession().find(User.class, id);
-    }
 
     @Override
     public void updateUser(User user) {
-        sessionFactory.getCurrentSession().update(user);
+        Session session = sessionFactory.getCurrentSession();
+        session.save(user);
+
     }
 
     @Override
     public void deleteUser(User user) {
-        sessionFactory.getCurrentSession().remove(user);
+        Session session = sessionFactory.getCurrentSession();
+        session.remove(session.contains(user) ? user : session.merge(user));
+    }
+
+    @Override
+    public User get(long id) {
+        Session session = sessionFactory.getCurrentSession();
+        return session.get(User.class, id);
+    }
+
+    @Override
+    public User findByUserName(String username) {
+        List<User> users = getAllUsers();
+        return users.stream().filter(x -> x.getUsername().equals(username)).findAny().orElse(new User());
     }
 }

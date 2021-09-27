@@ -1,20 +1,18 @@
 package com.peaksoft.service;
 
 import com.peaksoft.model.User;
+import org.springframework.stereotype.Service;
+
 
 import java.util.List;
 
+
+
 public interface UserService {
-
     List<User> getAllUsers();
-
-    void addUser(User user);
-
-    void updateUser(User user); //String id);
-
-    void deleteUser(User user);
-
-    User get(long id);
-
-    User findByUsername(String username);
+    User getUserById(int id);
+    User saveUser(User user);
+    void deleteUserById(int id);
+    User getUserByName(String name);
 }
+

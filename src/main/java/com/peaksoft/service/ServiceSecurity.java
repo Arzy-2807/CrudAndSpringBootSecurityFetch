@@ -16,21 +16,22 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Service
-public class UserDetailsServiceImpl implements UserDetailsService {
+@Transactional
+public class ServiceSecurity implements UserDetailsService {
 
-    private  final UserDao  userDao;
+    private  final UserService userService;
 
     @Autowired
-
-    public UserDetailsServiceImpl(UserDao userDao) {
-        this.userDao = userDao;
+    public ServiceSecurity(UserService userService) {
+        this.userService = userService;
     }
 
+
+
     @Override
-    @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        User user = userDao.findByUserName(username);
+        User user = userService.getUserByName(username);
 
         Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
         for (Role role: user.getRoles()){

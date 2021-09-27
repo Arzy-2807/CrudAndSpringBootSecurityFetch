@@ -9,26 +9,24 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "users")
+@Table(name = "users1")
 public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
-    @Column(name ="username")
-    private String username;
 
-    @Column(name = "age")
+    private String name;
     private int age;
-
-    @Column(name = "password")
     private String password;
+    private String department;
+    private String salary;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @JoinTable(name = "user_role1",
+            joinColumns = @JoinColumn(name = "user_id1"),
+            inverseJoinColumns = @JoinColumn(name = "role_id1"))
 
     private Set<Role> roles = new HashSet<>();
 
@@ -36,29 +34,37 @@ public class User implements UserDetails {
     }
 
 
-    public User(Long id, String username, int age, String password, Set<Role> roles) {
-        this.id = id;
-        this.username = username;
+    public User(String name, int age, String password, String department, String salary, Set<Role> roles) {
+        this.name = name;
         this.age = age;
         this.password = password;
+        this.department = department;
+        this.salary = salary;
         this.roles = roles;
     }
 
+    public Set<Role> getRoles() {
+        return roles;
+    }
 
-    public Long getId() {
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
     public String getName() {
-        return username;
+        return name;
     }
 
     public void setName(String name) {
-        this.username = username;
+        this.name = name;
     }
 
     public int getAge() {
@@ -73,24 +79,23 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-    public Set<Role> getRoles() {
-        return roles;
+    public String getDepartment() {
+        return department;
     }
 
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
+    public void setDepartment(String department) {
+        this.department = department;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", name='" + username + '\'' +
-                ", age=" + age +
-                ", password='" + password + '\'' +
-                ", roles=" + roles +
-                '}';
+    public String getSalary() {
+        return salary;
     }
+
+    public void setSalary(String salary) {
+        this.salary = salary;
+    }
+
+
 
     @Override
     public String getPassword() {
@@ -104,7 +109,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return username;
+        return name;
     }
 
     @Override
@@ -125,6 +130,19 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+
+
+
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", password='" + password + '\'' +
+                ", department='" + department + '\'' +
+                ", salary=" + salary +
+                '}';
     }
 }
 

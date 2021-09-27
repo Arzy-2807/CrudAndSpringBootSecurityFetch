@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="an" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <tittle>User Page</tittle>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
+    <style>
+        .btn-log{
+            margin-left: 1200px;
+            margin-bottom: 20px;
+            background-color: #457e80;
+            font-weight: bold;
+
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <table id="user-page-table" class="table table-bordered border-primary">
+        <tr>
+            <td>Id</td>
+            <td>Name</td>
+            <td>Age</td>
+            <td>Password</td>
+            <td>Department</td>
+            <td>Salary</td>
+            <td>Roles</td>
+        </tr>
+    </table>
+</div>
+<a href="/logout"><button type="button" class="btn-log">Logout</button></a>
+<script>
+    let url = 'http://localhost:8080/user';
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            let roless = [];
+            data.roles.map(role => {
+                roless.push(role.role);
+            })
+            let obj = `
+        <td>${data.id}</td>
+        <td>${data.name}</td>
+        <td>${data.age}</td>
+        <td>${data.password}</td>
+        <td>${data.department}</td>
+        <td>${data.salary}</td>
+        <td>${roless}</td>
+        `;
+            let value = document.createElement('tr');
+            value.innerHTML = obj
+            document.getElementById('user-page-table').append(value);
+        })
+</script>
+<!--<table>-->
+<!--    <tr>-->
+<!--        <th>Id</th>-->
+<!--        <th>Name</th>-->
+<!--        <th>Department</th>-->
+<!--        <th>Salary</th>-->
+<!--        <th>Role('s)</th>-->
+<!--    </tr>-->
+<!--    <tr>-->
+<!--        <td th:text="${user4.id}"></td>-->
+<!--        <td th:text="${user4.name}"></td>-->
+<!--        <td th:text="${user4.department}"></td>-->
+<!--        <td th:text="${user4.salary}"></td>-->
+<!--        <td th:text="${user4.roles}"></td>-->
+<!--    </tr>-->
+<!--</table>-->
+<!--<form method="get" action="/logout">-->
+<!--    <button class="btn btn-primary btn-block" type="submit">Logout</button>-->
+<!--</form>-->
+</body>
+</html>

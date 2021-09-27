@@ -1,20 +1,11 @@
 package com.peaksoft.dao;
 
 import com.peaksoft.model.User;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface UserDao {
+public interface UserDao extends JpaRepository<User,Integer> {
 
-    List<User> getAllUsers();
 
-    void addUser(User user);
-
-    void updateUser(User user);
-
-    void  deleteUser( User user);
-
-    User get(long id);
-
-    User findByUserName(String username);
 }

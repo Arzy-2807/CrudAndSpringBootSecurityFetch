@@ -10,38 +10,35 @@ import java.util.List;
 
 @Service
 @Transactional
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserDao userDao;
 
     @Override
+    public User saveUser(User user) {
+        return userDao.save(user);
+    }
+    @Override
     public List<User> getAllUsers() {
-        return userDao.getAllUsers();
+        return userDao.findAll();
     }
-
     @Override
-    public void addUser(User user) {
-        userDao.addUser(user);
+    public void deleteUserById(int id ) {
+        userDao.deleteById(id);
     }
-
     @Override
-    public void updateUser(User user) {
-        this.userDao.updateUser(user);
+    public User getUserByName(String name) {
+        List<User> users = userDao.findAll();
+        for (User user : users) {
+            if (user.getName().equals(name)){
+                return user;
+            }
+        }
+        return null;
     }
-
     @Override
-    public void deleteUser(User user) {
-        userDao.deleteUser(user);
-    }
-
-    @Override
-    public User get(long id) {
-        return userDao.get(id);
-    }
-
-    @Override
-    public User findByUsername(String username) {
-        return userDao.findByUserName(username);
+    public User getUserById(int id) {
+        return userDao.findById(id).get();
     }
 }
